@@ -10,10 +10,9 @@ var trupleRouter = require('./routes/trupleRoutes');
 
 // Database init 
 mongoose.Promise = global.Promise;
-if (process.env.env == "development") {
+if (process.env.NODE_ENV == "development") {
   mongoose.connect("mongodb://127.0.0.1:4001/interview_db")
 }
-
 
 var app = express();
 app.set('view engine', 'jade');
@@ -35,6 +34,7 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+  console.log(err)
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   // render the error page

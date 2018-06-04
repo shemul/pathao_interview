@@ -15,7 +15,7 @@ router.post('/', trupleController.create);
 /*
  * PUT
  */
-router.put('/:id', trupleController.update);
+router.patch('/', trupleController.update);
 
 /*
  * DELETE

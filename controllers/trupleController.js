@@ -10,29 +10,25 @@ module.exports = {
     /**
      * trupleController.list()
      */
-    list: function (req, res) {
-        trupleModel.find(function (err, truples) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting truple.',
-                    error: err
-                });
-            }
-            return res.json(truples);
-        });
+    list: function(req, res) {
+        return trupleModel
+            .find().lean().then(datas => {
+                res.send(datas)
+            });
     },
 
     /**
      * trupleController.create()
      */
-    create: function (req, res) {
+    create: function(req, res) {
+        const key = Object.keys(req.body)[0];
+        const value = Object.values(req.body)[0];
         var truple = new trupleModel({
-			key : req.body.key,
-			value : req.body.value
-
+            key: key,
+            value: value
         });
 
-        truple.save(function (err, truple) {
+        truple.save(function(err, truple) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when creating truple',
@@ -46,9 +42,12 @@ module.exports = {
     /**
      * trupleController.update()
      */
-    update: function (req, res) {
-        var id = req.params.id;
-        trupleModel.findOne({_id: id}, function (err, truple) {
+    update: function(req, res) {
+
+        const key = Object.keys(req.body)[0];
+        const value = Object.values(req.body)[0];
+
+        trupleModel.findOne({ 'key': key }, function(err, truple) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting truple',
@@ -61,10 +60,11 @@ module.exports = {
                 });
             }
 
-            truple.key = req.body.key ? req.body.key : truple.key;
-			truple.value = req.body.value ? req.body.value : truple.value;
-			
-            truple.save(function (err, truple) {
+            // truple.key = req.body.key ? req.body.key : truple.key;
+            truple.key = key;
+            truple.value = value;
+
+            truple.save(function(err, truple) {
                 if (err) {
                     return res.status(500).json({
                         message: 'Error when updating truple.',
