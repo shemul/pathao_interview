@@ -1,0 +1,20 @@
+version: '3'
+services:
+  app:
+    image: 'node:8.9.0'
+    volumes:
+      - '.:/node/src/interview'
+      - '/etc/timezone:/etc/timezone:ro'
+      - '/etc/localtime:/etc/localtime:ro'
+    working_dir: /node/src/interview
+    command: npm run prod
+    ports:
+      - '9090:9090'
+  database:
+    image: 'mongo:3.4'
+    command: mongod --port 9001
+    container_name: database
+    ports:
+      - '9001:9001'
+    volumes:
+      - './db:/db:rw'

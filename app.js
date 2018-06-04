@@ -10,7 +10,9 @@ var keyValueRouter = require('./routes/keyValueRoute');
 
 // Database init 
 mongoose.Promise = global.Promise;
-if (process.env.NODE_ENV == "development") {
+if (process.env.NODE_ENV == "production") {
+  mongoose.connect("mongodb://database:9001/interview_db")
+} else {
   mongoose.connect("mongodb://127.0.0.1:4001/interview_db")
 }
 

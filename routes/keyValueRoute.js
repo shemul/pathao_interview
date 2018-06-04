@@ -20,6 +20,6 @@ router.patch('/', keyValueController.update);
 /*
  * DELETE
  */
-// router.delete('/:id', trupleController.remove);
+// router.delete('/:id', keyValueController.remove);
 
 module.exports = router;

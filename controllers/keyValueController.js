@@ -2,9 +2,9 @@ var keyValueModel = require('../models/keyValueModel.js');
 var moment = require("moment");
 
 /**
- * trupleController.js
+ * keyValueController.js
  *
- * @description :: Server-side logic for managing truples.
+ * @description :: Server-side logic for managing keyValue.
  */
 
 const TTL = 30
@@ -13,7 +13,7 @@ const TTL_type = "seconds" // minutes | seconds | hours
 module.exports = {
 
     /**
-     * trupleController.list()
+     * keyValueController.list()
      */
     list: function(req, res) {
         var keyset = []
@@ -28,7 +28,7 @@ module.exports = {
         }
         return keyValueModel
             .find(d).lean().then(datas => {
-                // var ret_truple = []
+                // var ret_keyValue = []
                 var ret_json = {}
                 datas.map(async d => {
 
@@ -50,7 +50,7 @@ module.exports = {
                             console.log('TTL Updated')
                         })
                         // }
-                        // ret_truple.push(d)
+                        // ret_keyValue.push(d)
                         ret_json[d.key] = d.value
                     }
                 })
@@ -59,7 +59,7 @@ module.exports = {
     },
 
     /**
-     * trupleController.create()
+     * keyValueController.create()
      */
     create: function(req, res) {
         var keys = Object.keys(req.body);
@@ -88,7 +88,7 @@ module.exports = {
             })
         }).catch(ex => {
             return res.status(500).json({
-                message: 'Error when updating truple.',
+                message: 'Error when updating keyvalue.',
                 error: ex
             });
         });
@@ -118,7 +118,7 @@ module.exports = {
             })
         }).catch(ex => {
             return res.status(500).json({
-                message: 'Error when updating truple.',
+                message: 'Error when updating keyvalue.',
                 error: ex
             });
         });
