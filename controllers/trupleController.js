@@ -1,10 +1,15 @@
 var trupleModel = require('../models/trupleModel.js');
+var moment = require("moment");
 
 /**
  * trupleController.js
  *
  * @description :: Server-side logic for managing truples.
  */
+
+const TTL = 90000
+const TTL_type = "seconds"
+
 module.exports = {
 
     /**
@@ -22,12 +27,41 @@ module.exports = {
             }
         }
         return trupleModel
-            .find(d, {
-                _id: 0,
-                key: 1,
-                value: 1
-            }).lean().then(datas => {
-                res.send(datas)
+            .find(d).lean().then(datas => {
+                // var ret_truple = []
+                var ret_json = {}
+                datas.map(async d => {
+
+                    const terminate_At = moment(d.updated_at).add(TTL, TTL_type);
+                    // d.updated_at = moment.utc(d.updated_at).local().format("hh:mm:ss A");
+                    // d.created_at = moment.utc(d.created_at).local().format('hh:mm:ss A');
+                    // d.terminate_At = terminate_At.utc().local().format("hh:mm:ss A")
+                    delete d.created_at;
+                    delete d.updated_at;
+                    delete d._id;
+                    delete d.__v
+                    
+                    
+                    const t = terminate_At.diff(moment(), TTL_type)
+                    console.log(t)
+                    if (t <= 0) {
+                        trupleModel.findByIdAndRemove(d._id).then(d => {
+                            console.log('deleted')
+                        })
+                    }
+                    else {
+                        if (req.query.keys) {
+                            console.log("key found")
+                            trupleModel.findByIdAndUpdate(d._id).then(d => {
+                                console.log('TTL Updated')
+                            })
+                        }
+                        // ret_truple.push(d)
+                        ret_json[d.key] = d.value
+                    }
+                })
+
+                res.send(ret_json)
             });
     },
 
@@ -37,20 +71,17 @@ module.exports = {
     create: function(req, res) {
         const key = Object.keys(req.body)[0];
         const value = Object.values(req.body)[0];
-        var truple = new trupleModel({
-            key: key,
-            value: value
-        });
+        
+        // As key must be uniuqe in hashtable 
+        
+        var query = { "key": key },
+            update = { "value": value },
+            options = { upsert: true, new: true };
 
-        truple.save(function(err, truple) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when creating truple',
-                    error: err
-                });
-            }
-            return res.status(201).json(truple);
-        });
+        // Find the document
+        trupleModel.findOneAndUpdate(query, update, options).then(d => {
+            res.status(201).json(d)
+        })
     },
 
     /**
