@@ -1,21 +1,21 @@
 var express = require('express');
 var router = express.Router();
-var trupleController = require('../controllers/trupleController.js');
+var keyValueController = require('../controllers/keyValueController');
 
 /*
  * GET
  */
-router.get('/', trupleController.list);
+router.get('/', keyValueController.list);
 
 /*
  * POST
  */
-router.post('/', trupleController.create);
+router.post('/', keyValueController.create);
 
 /*
  * PUT
  */
-router.patch('/', trupleController.update);
+router.patch('/', keyValueController.update);
 
 /*
  * DELETE
