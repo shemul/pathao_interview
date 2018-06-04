@@ -7,8 +7,8 @@ var moment = require("moment");
  * @description :: Server-side logic for managing truples.
  */
 
-const TTL = 90000
-const TTL_type = "seconds"
+const TTL = 300
+const TTL_type = "seconds" // minutes | seconds | hours
 
 module.exports = {
 
@@ -36,10 +36,7 @@ module.exports = {
                     // d.updated_at = moment.utc(d.updated_at).local().format("hh:mm:ss A");
                     // d.created_at = moment.utc(d.created_at).local().format('hh:mm:ss A');
                     // d.terminate_At = terminate_At.utc().local().format("hh:mm:ss A")
-                    delete d.created_at;
-                    delete d.updated_at;
-                    delete d._id;
-                    delete d.__v
+                    
                     
                     
                     const t = terminate_At.diff(moment(), TTL_type)
@@ -51,7 +48,6 @@ module.exports = {
                     }
                     else {
                         if (req.query.keys) {
-                            console.log("key found")
                             trupleModel.findByIdAndUpdate(d._id).then(d => {
                                 console.log('TTL Updated')
                             })
