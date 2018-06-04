@@ -11,8 +11,22 @@ module.exports = {
      * trupleController.list()
      */
     list: function(req, res) {
+        var keyset = []
+        let d = {}
+
+        if (req.query.keys) {
+            keyset = req.query.keys.split(",")
+            d = {
+                ...d,
+                'key': keyset
+            }
+        }
         return trupleModel
-            .find().lean().then(datas => {
+            .find(d, {
+                _id: 0,
+                key: 1,
+                value: 1
+            }).lean().then(datas => {
                 res.send(datas)
             });
     },
