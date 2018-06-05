@@ -7,7 +7,7 @@ var moment = require("moment");
  * @description :: Server-side logic for managing keyValue.
  */
 
-const TTL = 30
+const TTL = 300 // 5 minute in second
 const TTL_type = "seconds" // minutes | seconds | hours
 
 module.exports = {
